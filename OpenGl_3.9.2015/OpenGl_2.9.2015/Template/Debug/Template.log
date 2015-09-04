@@ -1,0 +1,16 @@
+﻿Build started 4.9.2015 10:49:09.
+     1>Project "C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Template\Template.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\glm /IC:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
+         Main.cpp
+     1>c:\users\ttv14saleksil\desktop\opengl_3.9.2015\opengl_2.9.2015\template\main.cpp(149): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+     1>c:\users\ttv14saleksil\desktop\opengl_3.9.2015\opengl_2.9.2015\template\main.cpp(186): warning C4244: '=' : conversion from 'int' to 'GLfloat', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\Template.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\include\GL /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\bin /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\glm /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\Template.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\Template.lib" /MACHINE:X86 Debug\Main.obj
+         glew32.lib
+         Template.vcxproj -> C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\Template.exe
+     1>Done Building Project "C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Template\Template.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.15

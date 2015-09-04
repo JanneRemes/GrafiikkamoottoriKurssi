@@ -1,0 +1,137 @@
+#include <windows.h>
+#include "d3d_obj.h"
+
+#pragma comment(lib, "d3d9.lib")
+
+////////////////
+// Constants //
+//////////////
+
+// Width and height of the window
+const int kWinWid = 640;
+const int kWinHgt = 480;
+
+const char kClassName[] = "GT_D3DIntro"; // WNDCLASSEX's name
+
+// The WinProc
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+
+// Main window program
+int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hprev, PSTR cmdline, int ishow)
+{
+    HWND hwnd = NULL;
+	MSG msg = {0};
+    WNDCLASSEX wndclassex = {0};
+
+	// Init fields we care about
+	wndclassex.cbSize = sizeof(WNDCLASSEX); // Always set to size of WNDCLASSEX
+    wndclassex.style = CS_HREDRAW | CS_VREDRAW;
+    wndclassex.lpfnWndProc = WinProc;
+    wndclassex.hInstance = hinstance;
+	wndclassex.lpszClassName = kClassName;
+	wndclassex.hCursor = (HCURSOR)LoadImage(NULL, MAKEINTRESOURCE(IDC_ARROW),
+											IMAGE_CURSOR, 0, 0, LR_SHARED);
+
+    RegisterClassEx(&wndclassex); // Register the WNDCLASSEX
+
+	// Just like a guy wants his girl to be certain dimensions, the same is true
+	// with our window.  When setting up our window, we want to MAKE SURE that the
+	// client rect is exactly kWinWid x kWinHgt.  However, if we just simply 
+	// specify our window width/height to be that, our client rect will be
+	// smaller than that.  Thus we adjust our window rect (so it's bigger) allowing
+	// for the client rect to be the exact size we specify.  Coolio?
+	RECT rect = { 0, 0, kWinWid, kWinHgt }; // Desired window client rect
+	
+	DWORD winStyleEx = WS_EX_CLIENTEDGE; // This is our extended window style
+	DWORD winStyle = WS_CAPTION | WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX; // Our window style
+
+	// This function modifies "rect" so it contains the exact dimensions we 
+	// need to create a window that has a client rect of kWinWid x kWinHgt
+	AdjustWindowRectEx(&rect, winStyle, false, winStyleEx);
+
+	// Create the window
+    hwnd = CreateWindowEx(winStyleEx,
+					      kClassName,
+						  "www.GameTutorials.com -- D3D Intro",
+						  winStyle,
+						  CW_USEDEFAULT,
+						  CW_USEDEFAULT,
+						  rect.right - rect.left, // Window width
+						  rect.bottom - rect.top, // Window height
+						  NULL,
+						  NULL,
+						  hinstance,
+						  NULL);
+
+	// Init the global CD3DObj
+	if(g3D->init(hwnd) == false)
+		return EXIT_FAILURE; // There's been an error
+
+	// DOUBLE CHECK and make sure our client rect is what we want it to be
+	GetClientRect(hwnd, &rect);
+	assert(rect.right == kWinWid && rect.bottom == rect.bottom);
+
+	// Here's where we create our triangle.  By using a little math
+	// we'll center the triangle based on the width of the window.
+	SVertex triangle[] = 
+	{ 
+		// x, y, z, w, color
+		{ kWinWid / 2.0f,  100.0f, 1.0f, 1.0f, D3DCOLOR_ARGB(255, 255, 255, 255), }, 
+		{ kWinWid * 3.0f / 4.0f, 350.0f, 1.0f, 1.0f, D3DCOLOR_ARGB(255, 255, 255, 255), },
+		{ kWinWid / 4.0f, 350.0f, 1.0f, 1.0f, D3DCOLOR_ARGB(255, 255, 255, 255), },
+	};
+
+	ShowWindow(hwnd, ishow); // Set the window to the "ishow" flag passed in WinMain
+	UpdateWindow(hwnd); // Make sure the window gets initially painted
+
+	// While the app is running...
+    while(1)
+	{
+		// Handle any OS messages 
+		if(PeekMessage(&msg,NULL,0,0,PM_REMOVE))
+		{
+			if(msg.message == WM_QUIT)
+				break;
+			
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			g3D->begin(); // Begin the scene
+			g3D->clearColor(D3DCOLOR_ARGB(255, 0, 0, 0)); // Clear our viewport to black
+
+			g3D->render(triangle, 3); // Draw our triangle
+
+			g3D->end(); // End the scene (Quit rendering and blit to the screen)
+			
+			Sleep(1); // Give the OS a bit of time to process other things
+		}
+	
+	} // end of while(1)
+
+	g3D->deinit(); // Free up the CD3DObj
+	UnregisterClass(kClassName,hinstance); // Free up WNDCLASSEX
+	    return EXIT_SUCCESS; // Application was a success
+}
+
+// WinProc
+LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+{
+	switch(message)
+    {
+		case WM_KEYDOWN:
+
+			// If ESC key is pressed, close the app
+			if(wparam == VK_ESCAPE)
+				SendMessage(hwnd, WM_CLOSE, 0, 0);
+
+			return 0;
+
+		case WM_DESTROY:
+			PostQuitMessage(0);
+				return 0;
+    }
+
+    return DefWindowProc(hwnd, message, wparam, lparam);
+}

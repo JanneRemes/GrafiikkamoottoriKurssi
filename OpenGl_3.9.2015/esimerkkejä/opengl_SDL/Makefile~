@@ -1,0 +1,14 @@
+COMPILER=g++
+
+all: compile run
+
+compile:
+	$(COMPILER) main.cpp -o opengl `sdl-config --libs --cflags` -lGL -lGLU
+run:
+	@echo -----------------------------------------
+	@echo Usage:
+	@echo 
+	@echo ./opengl
+
+clean:
+	rm  *~

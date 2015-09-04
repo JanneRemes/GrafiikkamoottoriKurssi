@@ -1,0 +1,10 @@
+﻿Build started 4.9.2015 9:44:18.
+     1>Project "C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\openGL_2.9.2015_Kolmio\openGL_2.9.2015_Kolmio.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\openGL_2.9.2015_Kolmio.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\bin /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\glm /LIBPATH:C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\..\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\openGL_2.9.2015_Kolmio.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"mainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\openGL_2.9.2015_Kolmio.lib" /MACHINE:X86 Debug\Main.obj
+         openGL_2.9.2015_Kolmio.vcxproj -> C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\Debug\openGL_2.9.2015_Kolmio.exe
+     1>Done Building Project "C:\Users\ttv14saleksil\Desktop\OpenGl_3.9.2015\OpenGl_2.9.2015\openGL_2.9.2015_Kolmio\openGL_2.9.2015_Kolmio.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.20
