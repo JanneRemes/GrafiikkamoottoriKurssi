@@ -1,32 +1,294 @@
-#include <GL\glew.h>
-#include <GL\glut.h>
-
-#define GLM_FORCE_RADIANS
+﻿#include <cstdio>
+#include <cstdlib>
+#include <GL/glew.h>
+#include "glfw3.h"
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <iostream>
+using namespace glm;
+#include "shader.hpp"
+
+GLFWwindow* window;
+GLuint programID;
+GLuint vertexbuffer;
+GLuint VertexArrayID;
+GLuint colorbuffer;
 
 
-int winWidth = 400, winHeight = 400;
+void Render(void) {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glUseProgram(programID);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glVertexAttribPointer(
+		0,       // must match the layout in the shader.
+		3,       // size
+		GL_FLOAT,// type
+		GL_FALSE,// normalized
+		0,       // stride
+		(void*)0 // array buffer offset
+		);
 
-
-void init(void)
-{
-	/* Set the clear color. */
-	glClearColor(0, 0, 0, 0);
-
-	/* Setup our viewport. */
-	glViewport(0, 0, winWidth, winHeight);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+	glVertexAttribPointer(
+		1,         // must match the layout in the shader.
+		3,         // size
+		GL_FLOAT,  // type
+		GL_FALSE,  // normalized?
+		0,         // stride
+		(void*)0   // array buffer offset
+		);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glfwSwapBuffers(window);
 }
+void Init(void) {
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
+	programID = LoadShaders(
+		"VertexShader.vertexshader",
+		"FragmentShader.fragmentshader");
+
+	static const GLfloat g_vertex_buffer_data[] = {
+		-0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f,
+		0.0f, 0.5f, 0.0f, };
+
+	glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER,
+		sizeof(g_vertex_buffer_data),
+		g_vertex_buffer_data, GL_STATIC_DRAW);
+	static const GLfloat g_color_buffer_data[] = {
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f,
+	};
+	glGenBuffers(1, &colorbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+	glBufferData(GL_ARRAY_BUFFER,
+		sizeof(g_color_buffer_data),
+		g_color_buffer_data, GL_STATIC_DRAW);
+}
+
+void Uninit(void) {
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &colorbuffer);
+	glDeleteVertexArrays(1, &VertexArrayID);
+	glDeleteProgram(programID);
+}
+int main(void) {
+	if (!glfwInit())
+	{
+		fprintf(stderr, "Failed to initialize GLFW\n");
+		return -1;
+	}
+
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE,
+		GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(1024, 768,
+		"Tutorial 02 - Red triangle", NULL, NULL);
+	if (window == NULL){
+		fprintf(stderr, "Failed to open GLFW window.");
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+	glewExperimental = true; // Needed for core profile
+	if (glewInit() != GLEW_OK) {
+		fprintf(stderr, "Failed to initialize GLEW\n");
+		return -1;
+	}
+
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	Init();
+
+	do{
+		Render();
+		glfwPollEvents();
+	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+		glfwWindowShouldClose(window) == 0);
+
+	glfwTerminate();
+
+	return 0;
+}
+
+
+
+//......................................................//
+
+//#include <GL/glew.h>
+//
+//#include <GL\glut.h>
+//
+//#include <cstdio>
+//#include <cstdlib>
+//
+//#include "glfw3.h"
+//#include <glm/glm.hpp>
+//#include "shader.hpp"
+//
+//#define GLM_FORCE_RADIANS
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtx/transform.hpp>
+//#include <iostream>
+//
+//
+//GLFWwindow* window;
+//GLuint programID;
+//GLuint vertexbuffer;
+//GLuint VertexArrayID;
+//GLuint colorbuffer;
+//
+//int winWidth = 400, winHeight = 400;
+//
+////
+////void init(void)
+////{
+////	/* Set the clear color. */
+////	glClearColor(0, 0, 0, 0);
+////
+////	/* Setup our viewport. */
+////	glViewport(0, 0, winWidth, winHeight);
+////
+////	glMatrixMode(GL_PROJECTION);
+////	glLoadIdentity();
+////}
+//
+//
+//void Init(void) {
+//	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+//
+//	glGenVertexArrays(1, &VertexArrayID);
+//	glBindVertexArray(VertexArrayID);
+//
+//	programID = LoadShaders(
+//		"VertexShader.vertexshader",
+//		"ColorFragmentShader.fragmentshader");
+//
+//	static const GLfloat g_vertex_buffer_data[] = {
+//		-0.5f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, };
+//
+//	glGenBuffers(1, &vertexbuffer);
+//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+//	glBufferData(GL_ARRAY_BUFFER,
+//		sizeof(g_vertex_buffer_data),
+//		g_vertex_buffer_data, GL_STATIC_DRAW);
+//
+//
+//	static const GLfloat g_color_buffer_data[] = {
+//		1.0f, 0.0f, 0.0f,
+//		0.0f, 1.0f, 0.0f,
+//		0.0f, 0.0f, 1.0f,
+//	};
+//
+//
+//	glGenBuffers(1, &colorbuffer);
+//	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+//	glBufferData(GL_ARRAY_BUFFER,
+//		sizeof(g_color_buffer_data),
+//		g_color_buffer_data, GL_STATIC_DRAW);
+//}
+//
+//void Render(void)
+//{
+//	glClear(GL_COLOR_BUFFER_BIT);
+//	glUseProgram(programID);
+//	glEnableVertexAttribArray(0);
+//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+//	glVertexAttribPointer(
+//		0,
+//		3,
+//		GL_FLOAT,
+//		GL_FALSE,
+//		0,
+//		(void*)0
+//		);
+//	glEnableVertexAttribArray(1);
+//	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+//	glVertexAttribPointer(
+//		1,
+//		3,
+//		GL_FLOAT,
+//		GL_FALSE,
+//		0,
+//		(void*)0
+//		);
+//		
+//	glDrawArrays(GL_TRIANGLES, 0, 3);
+//	glDisableVertexAttribArray(0);
+//	glDisableVertexAttribArray(1);
+//	glfwSwapBuffers(window);
+//
+//}
+//
+//
+//
+//
+//void Uninit(void) 
+//{
+//	glDeleteBuffers(1, &vertexbuffer);
+//	glDeleteBuffers(1, &colorbuffer);
+//	glDeleteVertexArrays(1, &VertexArrayID);
+//	glDeleteProgram(programID);
+//}
+//
+//int main(void) {
+//	if (!glfwInit())
+//	{
+//		fprintf(stderr, "Failedtoinitialize GLFWnn");
+//		return -1;
+//	}
+//
+//	glfwWindowHint(GLFW_SAMPLES, 4);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//	glfwWindowHint(GLFW_OPENGL_PROFILE,
+//		GLFW_OPENGL_CORE_PROFILE);
+//
+//	window = glfwCreateWindow(1024, 768,
+//		" Tu t o r i a l 02  Red t r i a n g l e ", NULL, NULL);
+//	if (window == NULL) 
+//	{
+//		fprintf(stderr, " F a i l e d to open GLFW window . ");
+//		glfwTerminate();
+//		return -1;
+//	}
+//
+//	glfwMakeContextCurrent(window);
+//	glewExperimental = true; // Needed f o r c o r e p r o f i l e
+//
+//	if (glewInit() != GLEW_OK)
+//	{
+//		fprintf(stderr, "Failedtoinitialize GLEWnn");
+//		return -1;
+//	}
+//
+//	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+//	Init();
+//
+//	do
+//	{
+//		Render();
+//		glfwPollEvents();
+//	}
+//
+//	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
+//	glfwTerminate();
+//	return 0;
+//}
 
 
 //using namespace glm;
 //using namespace std;
-
+//
 //void PrintMatrix(const glm::mat4 &m) {
 //	for (int i = 0; i<4; i++) {
 //		for (int j = 0; j<4; j++) {
@@ -131,138 +393,139 @@ void init(void)
 //	system("PAUSE");
 //}
 
+//
+//GLfloat nnumber = 3.0;
+//GLfloat r = 0.0;
+//GLfloat g = 0.0;
+//GLfloat b = 0.0;
+//
+//GLfloat r2 = 0.0;
+//GLfloat g2 = 0.0;
+//GLfloat b2 = 0.0;
+//
+//GLfloat r3 = 0.0;
+//GLfloat g3 = 0.0;
+//GLfloat b3 = 0.0;
+//
+//static int window;
+//#include <string>;
+//
+//void renderScene(void){
+//
+//	if (nnumber >= 3 && nnumber <= 8){
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//		glLoadIdentity();
+//
+//		glBegin(GL_TRIANGLES);
+//
+//		GLfloat temp = (2 * 3.14159265359f) / nnumber;
+//
+//		for (size_t i = 0; i < nnumber; i++)
+//		{
+//			glColor3f(r, g, b);
+//			glVertex3f(0.0f, 0.0f, 0.0f);
+//
+//			glColor3f(r2, g2, b2);
+//			glVertex3f(cos(i * temp), sin(i* temp), 0.0f);
+//
+//			glColor3f(r3, g3, b3);
+//			glVertex3f(cos((i + 1)*temp), sin((i + 1)*temp), 0.0f);
+//		}
+//
+//		glEnd();
+//
+//		glutSwapBuffers();
+//	}
+//
+//}
+//
+//void menuCallback(int entry){
+//	if (entry == 1){
+//		glutDestroyWindow(window);
+//		exit(0);
+//	}
+//	else nnumber = entry;
+//}
+//
+//void colorCallbackRGB(int){
+//
+//	int randomn = (rand() % 3);
+//
+//	if (randomn == 0)
+//	{
+//		r = 0;
+//		g = 0;
+//		b = 255;
+//
+//		r2 = 255;
+//		g2 = 0;
+//		b2 = 0;
+//
+//		r3 = 0;
+//		g3 = 255;
+//		b3 = 0;
+//	}
+//	if (randomn == 1)
+//	{
+//		r = 255;
+//		g = 0;
+//		b = 0;
+//
+//		r2 = 0;
+//		g2 = 255;
+//		b2 = 0;
+//
+//		r3 = 0;
+//		g3 = 0;
+//		b3 = 255;
+//	}
+//	if (randomn == 2)
+//	{
+//		r = 0;
+//		g = 255;
+//		b = 0;
+//
+//		r2 = 0;
+//		g2 = 0;
+//		b2 = 255;
+//
+//		r3 = 255;
+//		g3 = 0;
+//		b3 = 0;
+//	}
+//	renderScene();
+//	glutTimerFunc(300, colorCallbackRGB, 0);
+//	//glutSwapBuffers();
+//}
+//
+//int main(int argc, char **argv){
+//	// init GLUT and create Window
+//	glutInit(&argc, argv);
+//	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+//	glutInitWindowPosition(100, 100);
+//	glutInitWindowSize(320, 320);
+//	window = glutCreateWindow("GLUT Tutorial");
+//
+//	//registercallbacks
+//	glutDisplayFunc(renderScene);
+//
+//	glutTimerFunc(200, colorCallbackRGB, 0);
+//
+//	glutCreateMenu(menuCallback);
+//	glutAddMenuEntry("Exit", 1);
+//
+//	glutAddMenuEntry("3", 3);
+//	glutAddMenuEntry("4", 4);
+//	glutAddMenuEntry("5", 5);
+//	glutAddMenuEntry("6", 6);
+//	glutAddMenuEntry("7", 7);
+//	glutAddMenuEntry("8", 8);
+//
+//	glutAttachMenu(GLUT_RIGHT_BUTTON);
+//	//enter GLUT event processingcycle
+//	glutMainLoop();
+//
+//	return 1;
+//}
 
-GLfloat nnumber = 3.0;
-GLfloat r = 0.0;
-GLfloat g = 0.0;
-GLfloat b = 0.0;
-
-GLfloat r2 = 0.0;
-GLfloat g2 = 0.0;
-GLfloat b2 = 0.0;
-
-GLfloat r3 = 0.0;
-GLfloat g3 = 0.0;
-GLfloat b3 = 0.0;
-
-static int window;
-#include <string>;
-
-void renderScene(void){
-
-	if (nnumber >= 3 && nnumber <= 8){
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glLoadIdentity();
-
-		glBegin(GL_TRIANGLES);
-
-		GLfloat temp = (2 * 3.14159265359f) / nnumber;
-
-		for (size_t i = 0; i < nnumber; i++)
-		{
-			glColor3f(r, g, b);
-			glVertex3f(0.0f, 0.0f, 0.0f);
-
-			glColor3f(r2, g2, b2);
-			glVertex3f(cos(i * temp), sin(i* temp), 0.0f);
-
-			glColor3f(r3, g3, b3);
-			glVertex3f(cos((i + 1)*temp), sin((i + 1)*temp), 0.0f);
-		}
-
-		glEnd();
-
-		glutSwapBuffers();
-	}
-
-}
-
-void menuCallback(int entry){
-	if (entry == 1){
-		glutDestroyWindow(window);
-		exit(0);
-	}
-	else nnumber = entry;
-}
-
-void colorCallbackRGB(int){
-
-	int randomn = (rand() % 3);
-
-	if (randomn == 0)
-	{
-		r = 0;
-		g = 0;
-		b = 255;
-
-		r2 = 255;
-		g2 = 0;
-		b2 = 0;
-
-		r3 = 0;
-		g3 = 255;
-		b3 = 0;
-	}
-	if (randomn == 1)
-	{
-		r = 255;
-		g = 0;
-		b = 0;
-
-		r2 = 0;
-		g2 = 255;
-		b2 = 0;
-
-		r3 = 0;
-		g3 = 0;
-		b3 = 255;
-	}
-	if (randomn == 2)
-	{
-		r = 0;
-		g = 255;
-		b = 0;
-
-		r2 = 0;
-		g2 = 0;
-		b2 = 255;
-
-		r3 = 255;
-		g3 = 0;
-		b3 = 0;
-	}
-	renderScene();
-	glutTimerFunc(300, colorCallbackRGB, 0);
-	//glutSwapBuffers();
-}
-
-int main(int argc, char **argv){
-	// init GLUT and create Window
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(320, 320);
-	window = glutCreateWindow("GLUT Tutorial");
-
-	//registercallbacks
-	glutDisplayFunc(renderScene);
-
-	glutTimerFunc(200, colorCallbackRGB, 0);
-
-	glutCreateMenu(menuCallback);
-	glutAddMenuEntry("Exit", 1);
-
-	glutAddMenuEntry("3", 3);
-	glutAddMenuEntry("4", 4);
-	glutAddMenuEntry("5", 5);
-	glutAddMenuEntry("6", 6);
-	glutAddMenuEntry("7", 7);
-	glutAddMenuEntry("8", 8);
-
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-	//enter GLUT event processingcycle
-	glutMainLoop();
-
-	return 1;
-}
