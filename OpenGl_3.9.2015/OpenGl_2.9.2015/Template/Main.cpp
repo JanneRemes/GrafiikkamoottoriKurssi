@@ -1,10 +1,17 @@
-﻿#include <cstdio>
+﻿#define GLM_FORCE_RADIANS
+#include <cstdio>
 #include <cstdlib>
 #include <GL/glew.h>
 #include "glfw3.h"
 #include <glm/glm.hpp>
 using namespace glm;
 #include "shader.hpp"
+#include <iostream>
+
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtx\transform.hpp>
+
 
 GLFWwindow* window;
 GLuint programID;
@@ -79,46 +86,181 @@ void Uninit(void) {
 	glDeleteVertexArrays(1, &VertexArrayID);
 	glDeleteProgram(programID);
 }
-int main(void) {
-	if (!glfwInit())
+
+
+void PrintVec(const glm::vec4 &v)
+{
+	std::cout << " ";
+
+	for (int i = 0; i < 4; i++)
 	{
-		fprintf(stderr, "Failed to initialize GLFW\n");
-		return -1;
+		std::cout << v[i] << "\n ";	
 	}
 
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE,
-		GLFW_OPENGL_CORE_PROFILE);
-
-	window = glfwCreateWindow(1024, 768,
-		"Tutorial 02 - Red triangle", NULL, NULL);
-	if (window == NULL){
-		fprintf(stderr, "Failed to open GLFW window.");
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
-	}
-
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	Init();
-
-	do{
-		Render();
-		glfwPollEvents();
-	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0);
-
-	glfwTerminate();
-
-	return 0;
+	std::cout << std::endl;
 }
+
+void PrintMatrix(const glm::mat4 &m)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int y = 0; y < 4; y++)
+		{
+			std::cout << m[y][i] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << std::endl;
+}
+
+int main()
+{
+
+
+
+	std::cout << "--------------------------------------------------------------" << std::endl;
+
+	glm::vec3 x_axis(1, 0, 0);
+	glm::vec3 y_axis(0, 1, 0);
+	glm::vec3 z_axis(0, 0, 1);
+
+	glm::vec4 p1(
+		0, 0, 0, 1
+		);
+
+
+	glm::vec4 p2(
+		1, 0, 0, 1
+		);
+
+	glm::vec4 p3(
+		0, 1, 0, 1
+		);
+
+	glm::vec3 s(0.3f);
+	glm::vec3 t(-2, -1, 0);
+	glm::vec3 r = z_axis;
+
+	glm::mat4 R =  glm::rotate(3.14159265f / 6, r); //rotate
+	glm::mat4 S = glm::scale(s); //Scale
+	glm::mat4 T = glm::translate(t); //Translate
+
+	glm::mat4 T_total = T * S * R;
+
+	PrintVec(T_total*p1);
+	PrintVec(T_total*p2);
+	PrintVec(T_total*p3);
+	PrintMatrix(T_total);
+
+	std::cout << "-----------------------------------------------------------------" << std::endl;
+
+	glm::vec3 z_axis2(0, 0, -1);
+	glm::vec3 camPos(1.2, 0.1, 0);
+	glm::vec3 camUp = y_axis;
+	glm::vec3 camRight = x_axis;
+	glm::vec3 camFront = z_axis2;
+
+	glm::mat4 C = glm::lookAt(camPos, camPos + camFront, camUp);
+	T_total = C * T_total;
+
+	PrintVec(T_total * p1);
+	PrintVec(T_total * p2);
+	PrintVec(T_total * p3);
+	PrintMatrix(T_total);
+
+	std::cout << "-----------------------------------------------------------------" << std::endl;
+
+	//glm::mat4x4 MyMatrix (
+	//	1, 0, 1, 0,
+	//	0, 1, 1, 0,
+	//	2, 0, 1, 1,
+	//	2, 0, 2, 0
+	//	);
+
+	glm::mat4x4 MyMatrix(
+		1, 0, 2, 2,
+		0, 1, 0, 0,
+		1, 1, 1, 2,
+		0, 0, 1, 0
+		);
+
+	//glm::mat4x4 MyMatrix2 (
+	//	0, 1, 1, 0,
+	//	0, 1, 1, 0,
+	//	0, 0, 0, 1,
+	//	2, 0, 2, 0
+	//	);
+
+
+	glm::mat4x4 MyMatrix2(
+		0, 0, 0, 2,
+		1, 1, 0, 0,
+		1, 1, 0, 2,
+		0, 0, 1, 0
+		);
+
+
+	glm::vec4 myvec(3, 4, -2, 1);
+
+
+	vec4 answer = MyMatrix * (MyMatrix2 * myvec);
+
+
+	std::cout << std::endl;
+
+	for (int i = 0; i < 4; i++)
+	{
+		
+		std::cout << answer[i] << std::endl;
+	}
+	
+	system("PAUSE");
+
+}
+
+
+
+//int main(void) {
+//	if (!glfwInit())
+//	{
+//		fprintf(stderr, "Failed to initialize GLFW\n");
+//		return -1;
+//	}
+//
+//	glfwWindowHint(GLFW_SAMPLES, 4);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//	glfwWindowHint(GLFW_OPENGL_PROFILE,
+//		GLFW_OPENGL_CORE_PROFILE);
+//
+//	window = glfwCreateWindow(1024, 768,
+//		"Tutorial 02 - Red triangle", NULL, NULL);
+//	if (window == NULL){
+//		fprintf(stderr, "Failed to open GLFW window.");
+//		glfwTerminate();
+//		return -1;
+//	}
+//	glfwMakeContextCurrent(window);
+//	glewExperimental = true; // Needed for core profile
+//	if (glewInit() != GLEW_OK) {
+//		fprintf(stderr, "Failed to initialize GLEW\n");
+//		return -1;
+//	}
+//
+//	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+//	Init();
+//
+//	do{
+//		Render();
+//		glfwPollEvents();
+//	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+//		glfwWindowShouldClose(window) == 0);
+//
+//	glfwTerminate();
+//
+//	return 0;
+//}
 
 
 

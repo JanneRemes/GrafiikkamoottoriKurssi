@@ -1,4 +1,4 @@
-﻿Build started 9.9.2015 11:17:33.
+﻿Build started 10.9.2015 15:55:30.
      1>Project "C:\Users\ttv14saleksil\Desktop\GrafiikkamoottoriKurssi\OpenGl_3.9.2015\OpenGl_2.9.2015\Template\Template.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\ttv14saleksil\Desktop\GrafiikkamoottoriKurssi\OpenGl_3.9.2015\OpenGl_2.9.2015\..\common /IC:\Users\ttv14saleksil\Desktop\GrafiikkamoottoriKurssi\OpenGl_3.9.2015\OpenGl_2.9.2015\..\glm /IC:\Users\ttv14saleksil\Desktop\GrafiikkamoottoriKurssi\OpenGl_3.9.2015\OpenGl_2.9.2015\..\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
@@ -12,4 +12,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.57
+Time Elapsed 00:00:01.03
